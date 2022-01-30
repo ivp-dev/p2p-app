@@ -1,0 +1,44 @@
+.viewport {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+}
+
+.media-container {
+  width: 100%;
+  height: 100%;
+}
+
+.player {
+  object-fit: cover;
+}
+
+.incomes__container {
+  position: absolute;
+  width: 30vw;
+  height: 30vh;
+  min-height: 10rem;
+  min-width: 10rem;
+  top: 1rem;
+  right: 1rem;
+}
+
+.control-pane {
+  z-index: 1000;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-size {
+  width: 100%;
+  height: 100%;
+}
+
+.br-1 {
+  border-radius: 1rem;
+}
