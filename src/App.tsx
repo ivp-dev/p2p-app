@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import VideoPlayer from './Viewport';
@@ -18,30 +19,25 @@ function stopMediaStreamTracks(stream: MediaStream) {
 
 function App() {
   const [startOutcomingStream, setStartOutcomingStream] = useState(false);
-  const [incomingStreams, setIncomingStreams] = useState<MediaStream[]>([]);
-  const [connections, setConnections] = useState<Connection[]>([]);
-  const [client, setClient] = useState<Client | null>(null);
+  const [acceptIncomingStream, setAcceptIncomingStream] = useState(false);
+
   const [outcomingStream, setOutcomingStream] = useState<MediaStream | null>(null);
+  const [incomingStream, setIncomingStream] = useState<MediaStream | null>(null);
+
+  const [connection, setConnection] = useState<Connection | null>(null);
+
+  const clientRef = useRef<Client | null>(null);
+
   const startCallback = useCallback(() => setStartOutcomingStream(true), []);
-  const stopCallback = useCallback(() => setStartOutcomingStream(false), []);
-  const callCallback = useCallback(() => {
-    if (client) {
-      const config: types.P2PConnectionConfig = {
-        gotRemoteStream: (stream) => {
-          setIncomingStreams(((incomes) => (incomes.some((income) => income === stream)
-            ? incomes
-            : [...incomes, stream]
-          )));
-        },
-      };
-      const conn = new Connection(client, config);
-      setConnections((conns) => [...conns, conn]);
-    }
-  }, [client]);
+
+  const stopCallback = useCallback(() => setAcceptIncomingStream(false), []);
+  const callCallback = useCallback(() => setAcceptIncomingStream(true), []);
+
   const playerContextValue = useMemo<types.ViewportContext>(() => ({
     outcomingStream,
-    incomingStreams,
-  }), [incomingStreams, outcomingStream]);
+    incomingStream,
+  }), [incomingStream, outcomingStream]);
+
   useEffect(() => {
     if (startOutcomingStream) {
       navigator.mediaDevices.getUserMedia({
@@ -55,28 +51,38 @@ function App() {
         stream && stopMediaStreamTracks(stream);
         return null;
       });
-      setConnections((conns) => {
-        conns.forEach((conn) => conn.close());
-        return [];
-      });
-      setIncomingStreams((incomes) => {
-        incomes.forEach(stopMediaStreamTracks);
-        return [];
-      });
     }
   }, [startOutcomingStream]);
+
   useEffect(() => {
-    connections.forEach((conn) => {
-      if (!conn.isOpened) {
-        conn.open();
-      }
-    });
-  }, [connections]);
+    const { current: client } = clientRef;
+    if (acceptIncomingStream && client) {
+      setConnection(new Connection(client, {
+        gotRemoteStream: (stream) => setIncomingStream(stream),
+      }));
+    } else {
+      setIncomingStream((stream) => {
+        stream && stopMediaStreamTracks(stream);
+        return null;
+      });
+
+      setConnection((conn) => {
+        conn?.close();
+        return null;
+      });
+    }
+  }, [acceptIncomingStream]);
+
+  useEffect(() => {
+    connection && connection.open();
+  }, [connection]);
+
   useEffect(() => {
     if (outcomingStream) {
-      setClient(new Client(outcomingStream));
+      clientRef.current = new Client(outcomingStream);
     }
   }, [outcomingStream]);
+
   return (
     <div className="container">
       <ViewportContext.Provider value={playerContextValue}>

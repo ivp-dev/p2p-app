@@ -7,7 +7,7 @@ export const initializer = (initialValue = initialState) => {
   if (persistState) {
     return JSON.parse(persistState) as CallHistory[];
   }
-  return initialState;
+  return initialValue;
 };
 
 export const historyReducer = (state: CallHistory[], action: Actions) => {

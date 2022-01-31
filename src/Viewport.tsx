@@ -16,15 +16,13 @@ interface ViewportProps {
 function Viewport({ start, stop, call }: ViewportProps) {
   const {
     outcomingStream,
-    incomingStreams,
+    incomingStream,
   } = useContext(ViewportContext);
   return (
     <div className="viewport">
       {outcomingStream && <Player stream={outcomingStream} autoPlay className="full-size" />}
       <div className="incomes__container">
-        {incomingStreams.map((income) => (
-          <Player key={income.id} stream={income} autoPlay className="full-size br-1" />
-        ))}
+        {incomingStream && <Player stream={incomingStream} autoPlay className="full-size br-1" />}
       </div>
       <div className="control-pane">
         <button type="button" onClick={() => start()}>start</button>

@@ -5,7 +5,7 @@ import * as types from './types';
 
 const ViewportContext = createContext<types.ViewportContext>({
   outcomingStream: null,
-  incomingStreams: [],
+  incomingStream: null,
 });
 
 export default ViewportContext;

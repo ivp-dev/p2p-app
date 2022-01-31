@@ -1,6 +1,6 @@
 export interface ViewportContext {
   outcomingStream: MediaStream | null
-  incomingStreams: MediaStream[]
+  incomingStream: MediaStream | null
 }
 
 export interface CallHistory {

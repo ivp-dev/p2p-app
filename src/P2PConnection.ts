@@ -33,17 +33,16 @@ class P2PConnection {
       const offer = await this.localClient.getConnect.createOffer();
       await this.onCreateOfferSuccess(offer);
       this.state = 'opened';
-    } catch {
-      console.log('error');
+    } catch (err: unknown) {
+      console.log(err);
     }
   }
 
   close() {
-    this.localClient.getConnect.removeEventListener('icecandidate', this.onLocalClientIceCandidate);
     this.remoteClient.getConnect.removeEventListener('icecandidate', this.onRemoteCientIceCandidate);
     this.remoteClient.getConnect.removeEventListener('track', this.onGotRemoteStream);
 
-    this.localClient.getConnect.close();
+    // this.localClient.getConnect.close();
     this.remoteClient.getConnect.close();
 
     this.state = 'closed';
@@ -54,8 +53,8 @@ class P2PConnection {
       if (e.candidate) {
         await this.remoteClient.getConnect.addIceCandidate(e.candidate);
       }
-    } catch {
-      console.log('error');
+    } catch (err: unknown) {
+      console.log(err);
     }
   }
 
@@ -64,8 +63,8 @@ class P2PConnection {
       if (e.candidate) {
         await this.localClient.getConnect.addIceCandidate(e.candidate);
       }
-    } catch {
-      console.log('error');
+    } catch (err: unknown) {
+      console.log(err);
     }
   }
 
@@ -78,29 +77,29 @@ class P2PConnection {
 
     try {
       await this.remoteClient.getConnect.setRemoteDescription(desc);
-    } catch {
-      console.log('error');
+    } catch (err: unknown) {
+      console.log(err);
     }
 
     try {
       const answer = await this.remoteClient.getConnect.createAnswer();
       await this.onCreateAnswerSuccess(answer);
-    } catch {
-      console.log('error');
+    } catch (err: unknown) {
+      console.log(err);
     }
   }
 
   private async onCreateAnswerSuccess(desc: RTCSessionDescriptionInit) {
     try {
       await this.remoteClient.getConnect.setLocalDescription(desc);
-    } catch {
-      console.log('error');
+    } catch (err: unknown) {
+      console.log(err);
     }
 
     try {
       await this.localClient.getConnect.setRemoteDescription(desc);
-    } catch {
-      console.log('error');
+    } catch (err: unknown) {
+      console.log(err);
     }
   }
 
