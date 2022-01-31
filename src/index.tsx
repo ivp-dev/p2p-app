@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
-import App from './App';
+import App from './app';
 import reportWebVitals from './reportWebVitals';
-import HistoryContextProvider from './HistoryContextProvider';
+import AppContextProvider from './state/app-context';
 
 ReactDOM.render(
   <React.StrictMode>
-    <HistoryContextProvider>
+    <AppContextProvider>
       <App />
-    </HistoryContextProvider>
+    </AppContextProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

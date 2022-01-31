@@ -1,5 +1,5 @@
-import P2PClient from './P2PClient';
-import { P2PConnectionConfig } from './types';
+import P2PClient from './p2p-client';
+import { P2PConnectionConfig } from '../types';
 
 class P2PConnection {
   private remoteClient: P2PClient;
@@ -44,6 +44,8 @@ class P2PConnection {
 
     // this.localClient.getConnect.close();
     this.remoteClient.getConnect.close();
+
+    this.config?.onClose?.();
 
     this.state = 'closed';
   }

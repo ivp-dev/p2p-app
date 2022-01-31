@@ -1,0 +1,161 @@
+.viewport {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+}
+
+.media-container {
+  width: 100%;
+  height: 100%;
+}
+
+.player {
+  object-fit: cover;
+}
+
+.incomes__container {
+  position: absolute;
+  width: 30vw;
+  height: 30vh;
+  min-height: 10rem;
+  min-width: 10rem;
+  top: 1rem;
+  right: 1rem;
+}
+
+.control-pane {
+  z-index: 1000;
+  position: absolute;
+  bottom: 2rem;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-pane {
+  z-index: 1000;
+  position: absolute;
+  left: 2rem;
+  top: 2rem;
+  opacity: .3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .5s linear;
+
+  .settings-icon {
+    transition:transform .5s ease-out;
+    transform:rotate(0deg);
+  }
+
+  &.active,
+  &:hover {
+    opacity: 1;
+  }
+  
+  &.active {
+    .settings-icon {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+@keyframes rotate {
+  100% {transform: rotate(180deg);}
+}
+
+.dropdown-menu {
+  position: relative;
+
+  .dropdown {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    opacity: 0;
+    transition:all .5s ease-out;
+
+    &.dropdown-enter-active,
+    &.dropdown-enter-done {
+      opacity: 1;
+      transform: translate(-50%, .5rem);
+    }
+    
+    &.dropdown-exit-done {
+      @extend .hidden;
+    }
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.btn {
+  border: none;
+  display: flex;
+  width: 3em;
+  height: 3em;
+  cursor: pointer;
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-accent);
+
+  &:hover {
+    .icon {
+      fill: var(--font-color-highlight);
+    }
+  }
+}
+
+.btn-prime {
+  @extend .btn;
+  margin-left: .5rem;
+  margin-right: .5rem;
+  font-size: 1.125rem;
+}
+
+.btn-secondary {
+  @extend .btn;
+}
+
+.settings-btn {
+  @extend .btn-secondary;
+}
+
+.theme-toggle-btn {
+  @extend .btn-secondary;
+}
+
+.hang-up-btn,
+.start-btn {
+  @extend .btn-prime;
+}
+
+.call-btn {
+  @extend .btn-prime;
+  background: var(--color-primary);
+}
+
+.icon {
+  fill: var(--font-color);
+}
+
+.full-size {
+  width: 100%;
+  height: 100%;
+}
+
+.rounded-0 {
+  border-radius: .5rem;
+}
+
+.rounded-1 {
+  border-radius: 1rem;
+}
+
+.rounded {
+  border-radius: 50%;
+}

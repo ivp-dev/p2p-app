@@ -1,0 +1,26 @@
+{
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "react-app",
+    "react-app/jest",
+    "plugin:react/jsx-runtime"
+  ],
+  "rules": {
+    "react/jsx-props-no-spreading": [
+      2,
+      {
+        "html": "ignore"
+      }
+    ],
+    "jsx-a11y/media-has-caption": [
+      0,
+      {
+        "video": ["Video"]
+      }
+    ]
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  }
+}

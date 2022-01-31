@@ -1,93 +1,24 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import VideoPlayer from './Viewport';
-import ViewportContext from './ViewportContext';
+import { useContext, useEffect } from 'react';
 import * as types from './types';
-import Connection from './P2PConnection';
-import Client from './P2PClient';
+import { AppContext } from './state/app-context';
+import Player from './components/player';
 
-import './App.scss';
-
-function stopMediaStreamTracks(stream: MediaStream) {
-  stream?.getTracks().forEach((track) => track.stop());
-}
+import './styles/app.scss';
 
 function App() {
-  const [startOutcomingStream, setStartOutcomingStream] = useState(false);
-  const [acceptIncomingStream, setAcceptIncomingStream] = useState(false);
-
-  const [outcomingStream, setOutcomingStream] = useState<MediaStream | null>(null);
-  const [incomingStream, setIncomingStream] = useState<MediaStream | null>(null);
-
-  const [connection, setConnection] = useState<Connection | null>(null);
-
-  const clientRef = useRef<Client | null>(null);
-
-  const startCallback = useCallback(() => setStartOutcomingStream(true), []);
-
-  const stopCallback = useCallback(() => setAcceptIncomingStream(false), []);
-  const callCallback = useCallback(() => setAcceptIncomingStream(true), []);
-
-  const playerContextValue = useMemo<types.ViewportContext>(() => ({
-    outcomingStream,
-    incomingStream,
-  }), [incomingStream, outcomingStream]);
+  const { state } = useContext(AppContext);
 
   useEffect(() => {
-    if (startOutcomingStream) {
-      navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      }).then((newOutcomingStream) => {
-        setOutcomingStream(newOutcomingStream);
-      });
+    if (state.theme === types.Theme.Dark) {
+      document.body.classList.add('dark-theme');
     } else {
-      setOutcomingStream((stream) => {
-        stream && stopMediaStreamTracks(stream);
-        return null;
-      });
+      document.body.classList.remove('dark-theme');
     }
-  }, [startOutcomingStream]);
-
-  useEffect(() => {
-    const { current: client } = clientRef;
-    if (acceptIncomingStream && client) {
-      setConnection(new Connection(client, {
-        gotRemoteStream: (stream) => setIncomingStream(stream),
-      }));
-    } else {
-      setIncomingStream((stream) => {
-        stream && stopMediaStreamTracks(stream);
-        return null;
-      });
-
-      setConnection((conn) => {
-        conn?.close();
-        return null;
-      });
-    }
-  }, [acceptIncomingStream]);
-
-  useEffect(() => {
-    connection && connection.open();
-  }, [connection]);
-
-  useEffect(() => {
-    if (outcomingStream) {
-      clientRef.current = new Client(outcomingStream);
-    }
-  }, [outcomingStream]);
+  }, [state]);
 
   return (
     <div className="container">
-      <ViewportContext.Provider value={playerContextValue}>
-        <VideoPlayer start={startCallback} stop={stopCallback} call={callCallback} />
-      </ViewportContext.Provider>
+      <Player />
     </div>
   );
 }

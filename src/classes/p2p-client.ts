@@ -1,6 +1,7 @@
 class P2PClient {
   constructor(stream?: MediaStream) {
     this.connection = new RTCPeerConnection();
+
     if (stream) {
       stream.getTracks().forEach((track) => {
         this.connection.addTrack(track, stream);
