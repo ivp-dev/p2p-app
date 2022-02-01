@@ -35,16 +35,7 @@ class P2PConnection {
     }
   }
 
-  get getCallHistory(): CallHistory {
-    return {
-      id: uuidv4(),
-      start: this.openConnectionTimestamp,
-      stop: this.closeConnectionTimestamp,
-      duration: this.closeConnectionTimestamp - this.openConnectionTimestamp,
-    };
-  }
-
-  disconect() {
+  disconect(): CallHistory {
     this.remoteClient.getConnect.close();
 
     this.config?.onClose?.();
@@ -53,6 +44,13 @@ class P2PConnection {
     this.remoteClient.getConnect.removeEventListener('track', this.onGotRemoteStream);
 
     this.closeConnectionTimestamp = Date.now();
+
+    return {
+      id: uuidv4(),
+      start: this.openConnectionTimestamp,
+      stop: this.closeConnectionTimestamp,
+      duration: this.closeConnectionTimestamp - this.openConnectionTimestamp,
+    };
   }
 
   private async onLocalClientIceCandidate(e: RTCPeerConnectionIceEvent) {

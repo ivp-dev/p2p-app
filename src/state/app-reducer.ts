@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+import { format } from 'date-fns';
 import { AppState, CallHistory, Theme } from '../types';
 
 export interface Action<T> {
@@ -13,7 +15,7 @@ export const initialState: AppState = {
   history: [],
 };
 
-export const initializer = (initialValue = initialState) => {
+export const initializer = (initialValue: AppState) => {
   const persistState = localStorage.getItem('state');
   if (persistState) {
     return JSON.parse(persistState) as AppState;

@@ -76,8 +76,7 @@ function Player() {
       (conn) => conn?.open(),
       (conn) => {
         setIncomingStream(null, () => { }, stopMediaStreamTracks);
-        conn?.disconect();
-        const history = conn?.getCallHistory;
+        const history = conn?.disconect();
         history && updateState(addToHistoryActionCreator(history));
       },
     );

@@ -7,3 +7,4 @@ export { default as SettingsIcon } from './settings-icon';
 export { default as PhoneStopIcon } from './phone-stop-icon';
 export { default as VideoOffIcon } from './video-off-icon';
 export { default as CloseIcon } from './close-icon';
+export { default as TrashIcon } from './trash-icon';
