@@ -38,8 +38,6 @@ class P2PConnection {
   disconect(): CallHistory {
     this.remoteClient.getConnect.close();
 
-    this.config?.onClose?.();
-
     this.remoteClient.getConnect.removeEventListener('icecandidate', this.onRemoteCientIceCandidate);
     this.remoteClient.getConnect.removeEventListener('track', this.onGotRemoteStream);
 

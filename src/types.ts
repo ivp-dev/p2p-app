@@ -30,5 +30,4 @@ export type StartCallCallback = StopCallCallback;
 
 export interface P2PConnectionConfig {
   gotRemoteStream?: (stream: MediaStream) => void
-  onClose?: () => void
 }

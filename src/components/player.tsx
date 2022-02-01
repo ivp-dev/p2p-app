@@ -70,7 +70,6 @@ function Player() {
       acceptIncomingStream && client
         ? new Connection(client, {
           gotRemoteStream: (stream) => setIncomingStream(stream),
-          onClose: () => { /* can write to state */ },
         })
         : null,
       (conn) => conn?.open(),

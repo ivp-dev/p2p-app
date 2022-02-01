@@ -10,15 +10,15 @@ function HistoryModal({
   children,
 }: PropsWithChildren<HistoryModalProps>) {
   return (
-    <div className="history-modal">
-      <button
-        className="history-modal__close-btn"
-        onClick={close}
-        type="button"
-      >
-        <CloseIcon />
-      </button>
-      <div className="scroll-content">{children}</div>
+    <div className="modal">
+      <div className="modal__dialog">
+        <div className="modal__content">
+          <button className="modal__close-btn" onClick={close} type="button">
+            <CloseIcon />
+          </button>
+          <div className="modal__body">{children}</div>
+        </div>
+      </div>
     </div>
   );
 }
