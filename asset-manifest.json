@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/p2p-app/static/css/main.63fd3c2c.css",
-    "main.js": "/p2p-app/static/js/main.148e654a.js",
+    "main.js": "/p2p-app/static/js/main.8d756e0f.js",
     "static/js/787.1a73295f.chunk.js": "/p2p-app/static/js/787.1a73295f.chunk.js",
     "index.html": "/p2p-app/index.html",
     "main.63fd3c2c.css.map": "/p2p-app/static/css/main.63fd3c2c.css.map",
-    "main.148e654a.js.map": "/p2p-app/static/js/main.148e654a.js.map",
+    "main.8d756e0f.js.map": "/p2p-app/static/js/main.8d756e0f.js.map",
     "787.1a73295f.chunk.js.map": "/p2p-app/static/js/787.1a73295f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.63fd3c2c.css",
-    "static/js/main.148e654a.js"
+    "static/js/main.8d756e0f.js"
   ]
 }
