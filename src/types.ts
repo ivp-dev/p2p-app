@@ -6,9 +6,10 @@ export interface ViewportContext {
 }
 
 export interface CallHistory {
-  id: number
+  id: string
   start: number
   stop: number
+  duration: number
 }
 
 export interface AppState {

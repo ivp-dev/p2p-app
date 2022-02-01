@@ -30,7 +30,7 @@ export const appReducer = (state: AppState, action: Actions) => {
       return {
         ...state,
         history: state.history.filter(
-          (call) => call.id === action.payload.callId,
+          (call) => call.id !== action.payload.callId,
         ),
       };
     }
@@ -78,5 +78,5 @@ export const SET_THEME = 'SET_THEME';
 
 export type Actions =
   | { type: typeof ADD_TO_HISTORY; payload: { call: CallHistory } }
-  | { type: typeof REMOVE_FROM_HISTORY; payload: { callId: number } }
+  | { type: typeof REMOVE_FROM_HISTORY; payload: { callId: string } }
   | { type: typeof SET_THEME; payload: { theme: Theme } };

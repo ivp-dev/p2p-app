@@ -1,10 +1,13 @@
+import { v4 as uuidv4 } from 'uuid';
 import P2PClient from './p2p-client';
-import { P2PConnectionConfig } from '../types';
+import { CallHistory, P2PConnectionConfig } from '../types';
 
 class P2PConnection {
   private remoteClient: P2PClient;
 
-  private state: 'closed' | 'opened';
+  private openConnectionTimestamp: number = 0;
+
+  private closeConnectionTimestamp: number = 0;
 
   constructor(
     private localClient: P2PClient,
@@ -20,34 +23,36 @@ class P2PConnection {
     this.remoteClient.getConnect.addEventListener('icecandidate', this.onRemoteCientIceCandidate);
 
     this.remoteClient.getConnect.addEventListener('track', this.onGotRemoteStream);
-
-    this.state = 'closed';
-  }
-
-  get isOpened(): boolean {
-    return this.state === 'opened';
   }
 
   async open() {
     try {
       const offer = await this.localClient.getConnect.createOffer();
       await this.onCreateOfferSuccess(offer);
-      this.state = 'opened';
+      this.openConnectionTimestamp = Date.now();
     } catch (err: unknown) {
       console.log(err);
     }
   }
 
-  close() {
-    this.remoteClient.getConnect.removeEventListener('icecandidate', this.onRemoteCientIceCandidate);
-    this.remoteClient.getConnect.removeEventListener('track', this.onGotRemoteStream);
+  get getCallHistory(): CallHistory {
+    return {
+      id: uuidv4(),
+      start: this.openConnectionTimestamp,
+      stop: this.closeConnectionTimestamp,
+      duration: this.closeConnectionTimestamp - this.openConnectionTimestamp,
+    };
+  }
 
-    // this.localClient.getConnect.close();
+  disconect() {
     this.remoteClient.getConnect.close();
 
     this.config?.onClose?.();
 
-    this.state = 'closed';
+    this.remoteClient.getConnect.removeEventListener('icecandidate', this.onRemoteCientIceCandidate);
+    this.remoteClient.getConnect.removeEventListener('track', this.onGotRemoteStream);
+
+    this.closeConnectionTimestamp = Date.now();
   }
 
   private async onLocalClientIceCandidate(e: RTCPeerConnectionIceEvent) {

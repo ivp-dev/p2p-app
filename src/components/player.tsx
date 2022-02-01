@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -9,8 +10,11 @@ import Viewport, { ViewportContext } from './viewport';
 import * as types from '../types';
 import Connection from '../classes/p2p-connection';
 import Client from '../classes/p2p-client';
+import { useStateWithCallback } from '../hooks';
+import { AppContext } from '../state/app-context';
+import { addToHistoryActionCreator } from '../state/app-reducer';
 
-function stopMediaStreamTracks(stream: MediaStream) {
+function stopMediaStreamTracks(stream?: MediaStream | null) {
   stream?.getTracks().forEach((track) => track.stop());
 }
 
@@ -18,22 +22,27 @@ function Player() {
   const [startOutcomingStream, setStartOutcomingStream] = useState(false);
   const [acceptIncomingStream, setAcceptIncomingStream] = useState(false);
 
-  const [outcomingStream, setOutcomingStream] = useState<MediaStream | null>(null);
-  const [incomingStream, setIncomingStream] = useState<MediaStream | null>(null);
+  const [outcomingStream, setOutcomingStream] = useStateWithCallback<MediaStream | null>(null);
+  const [incomingStream, setIncomingStream] = useStateWithCallback<MediaStream | null>(null);
 
-  const [connection, setConnection] = useState<Connection | null>(null);
+  const [, setConnection] = useStateWithCallback<Connection | null>(null);
 
   const clientRef = useRef<Client | null>(null);
 
-  const startCallback = useCallback(() => setStartOutcomingStream(true), []);
+  const toggleOutcomeCallback = useCallback(() => setStartOutcomingStream(
+    (current) => !current,
+  ), []);
 
-  const stopCallback = useCallback(() => setAcceptIncomingStream(false), []);
-  const callCallback = useCallback(() => setAcceptIncomingStream(true), []);
+  const toggleIncomeCallback = useCallback(() => setAcceptIncomingStream(
+    (current) => !current,
+  ), []);
 
   const playerContextValue = useMemo<types.ViewportContext>(() => ({
     outcomingStream,
     incomingStream,
   }), [incomingStream, outcomingStream]);
+
+  const { updateState } = useContext(AppContext);
 
   useEffect(() => {
     if (startOutcomingStream) {
@@ -41,52 +50,43 @@ function Player() {
         audio: true,
         video: true,
       }).then((newOutcomingStream) => {
-        setOutcomingStream(newOutcomingStream);
+        setOutcomingStream(newOutcomingStream, (outcome) => {
+          if (outcome) {
+            clientRef.current = new Client(outcome);
+          }
+        }, stopMediaStreamTracks);
       });
     } else {
-      setOutcomingStream((stream) => {
-        stream && stopMediaStreamTracks(stream);
-        return null;
+      setOutcomingStream(null, () => { }, (outcome) => {
+        stopMediaStreamTracks(outcome);
+        setAcceptIncomingStream(false);
       });
     }
-  }, [startOutcomingStream]);
+  }, [setOutcomingStream, startOutcomingStream]);
 
   useEffect(() => {
     const { current: client } = clientRef;
-    if (acceptIncomingStream) {
-      client && setConnection(new Connection(client, {
-        gotRemoteStream: (stream) => setIncomingStream(stream),
-        onClose: () => { /* can write to state */ },
-      }));
-    } else {
-      setIncomingStream((stream) => {
-        stream && stopMediaStreamTracks(stream);
-        return null;
-      });
-
-      setConnection((conn) => {
-        conn?.close();
-        return null;
-      });
-    }
-  }, [acceptIncomingStream]);
-
-  useEffect(() => {
-    connection && connection.open();
-  }, [connection]);
-
-  useEffect(() => {
-    if (outcomingStream) {
-      clientRef.current = new Client(outcomingStream);
-    } else {
-      clientRef.current = null;
-    }
-  }, [outcomingStream]);
+    setConnection(
+      acceptIncomingStream && client
+        ? new Connection(client, {
+          gotRemoteStream: (stream) => setIncomingStream(stream),
+          onClose: () => { /* can write to state */ },
+        })
+        : null,
+      (conn) => conn?.open(),
+      (conn) => {
+        setIncomingStream(null, () => { }, stopMediaStreamTracks);
+        conn?.disconect();
+        const history = conn?.getCallHistory;
+        history && updateState(addToHistoryActionCreator(history));
+      },
+    );
+  }, [acceptIncomingStream, setConnection, setIncomingStream, updateState]);
 
   return (
     <div className="container">
       <ViewportContext.Provider value={playerContextValue}>
-        <Viewport start={startCallback} stop={stopCallback} call={callCallback} />
+        <Viewport start={toggleOutcomeCallback} call={toggleIncomeCallback} />
       </ViewportContext.Provider>
     </div>
   );

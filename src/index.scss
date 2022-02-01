@@ -11,7 +11,6 @@ html {
 
 body {
   &.dark-theme {
-    --color-primary: #00df5d;
     --color-secondary: #243133;
     --color-accent: #1f292a;
     --font-color: #dadada;
@@ -23,7 +22,9 @@ body {
 }
 
 :root {
+  --color-primary-accent: #da1a1a;
   --color-primary: #00df5d;
+  --color-primary-lowlight: #95ffc1;
   --color-secondary: #fbfbfe;
   --color-accent: #f1f1f1;
   --font-color: #2c2c2c;

@@ -4,3 +4,6 @@ export { default as HistoryIcon } from './history-icon';
 export { default as LightThemeIcon } from './light-theme-icon';
 export { default as DarkThemeIcon } from './dark-theme-icon';
 export { default as SettingsIcon } from './settings-icon';
+export { default as PhoneStopIcon } from './phone-stop-icon';
+export { default as VideoOffIcon } from './video-off-icon';
+export { default as CloseIcon } from './close-icon';

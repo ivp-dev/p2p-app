@@ -9,8 +9,9 @@
   height: 100%;
 }
 
-.player {
+.video {
   object-fit: cover;
+  display: block;
 }
 
 .incomes__container {
@@ -136,7 +137,46 @@
 
 .call-btn {
   @extend .btn-prime;
-  background: var(--color-primary);
+  background-color: var(--color-primary);
+
+  &.stop {
+    background-color: var(--color-primary-accent);
+  }
+
+  &:disabled {
+    pointer-events: none;
+    background-color: var(--color-primary-lowlight);
+  }
+}
+
+.history-modal {
+  position: absolute;
+  background-color: var(--color-secondary);
+  top: 1em;
+  left: 1em;
+  right: 1em;
+  bottom: 1em;
+  z-index: 1001;
+  padding: 1em;
+  border-radius: .5em;
+
+  &__close-btn {
+    background-color: transparent;
+    border: none;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    padding: 0;
+  }
+}
+
+.history-table {
+  width: 100%;
+  table-layout: fixed;
 }
 
 .icon {
