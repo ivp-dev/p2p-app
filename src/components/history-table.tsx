@@ -7,12 +7,15 @@ import { CallHistory } from '../types';
 
 function HistoryTable() {
   const { state, updateState } = useContext(AppContext);
-  const removeRecord = useCallback((id: string) => {
-    updateState(removeFronHistoryActionCreator(id));
-  }, [updateState]);
+  const removeRecord = useCallback(
+    (id: string) => {
+      updateState(removeFronHistoryActionCreator(id));
+    },
+    [updateState],
+  );
 
   return (
-    <table className="history-table">
+    <table className="table">
       <thead>
         <tr>
           <th>Call started</th>
@@ -29,14 +32,22 @@ function HistoryTable() {
             remove={removeRecord}
           />
         ))}
+        <tr className="table__footer">
+          <td colSpan={4}>
+            {`Total duration (seconds): ${state.history.reduce(
+              (acc, h) => acc + h.duration / 1000,
+              0,
+            ).toFixed(2)}`}
+          </td>
+        </tr>
       </tbody>
     </table>
   );
 }
 
 interface HistoryRecordProps {
-  record: CallHistory
-  remove: (id: string) => void
+  record: CallHistory;
+  remove: (id: string) => void;
 }
 
 function HistoryRecord({ record, remove }: HistoryRecordProps) {
@@ -44,9 +55,13 @@ function HistoryRecord({ record, remove }: HistoryRecordProps) {
     <tr key={record.id}>
       <td>{format(record.start, 'yyyy-MM-dd HH:mm:ss')}</td>
       <td>{format(record.stop, 'yyyy-MM-dd HH:mm:ss')}</td>
-      <td>{`${Math.round(record.duration / 1000)}`}</td>
+      <td>{`${(record.duration / 1000).toFixed(2)}`}</td>
       <td>
-        <button type="button" className="remove-history-btn" onClick={() => remove(record.id)}>
+        <button
+          type="button"
+          className="remove-history-btn"
+          onClick={() => remove(record.id)}
+        >
           <Icons.TrashIcon />
         </button>
       </td>

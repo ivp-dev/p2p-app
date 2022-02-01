@@ -209,7 +209,7 @@
   }
 }
 
-.history-table {
+.table {
   width: 100%;
   text-align: center;
   white-space: nowrap;
@@ -221,6 +221,10 @@
 
   td {
     border-top: 1px solid var(--color-secondary);
+  }
+
+  &__footer {
+    border-top: 2px solid var(--color-secondary);
   }
 }
 

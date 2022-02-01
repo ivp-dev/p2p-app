@@ -40,8 +40,8 @@ function Viewport({ start, call }: ViewportProps) {
       <div className="incomes__container">
         {incomingStream && (
           <Video
-            stream={incomingStream}
             autoPlay
+            stream={incomingStream}
             className="full-size rounded-1"
           />
         )}
